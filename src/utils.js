@@ -6,5 +6,6 @@ module.exports = {
 		database: './wildersdb.sqlite',
 		synchronize: true,
 		entities: [require('./entity/Wilder')],
+		logging: ['query', 'error'],
 	}),
 }
