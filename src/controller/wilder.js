@@ -34,10 +34,11 @@ module.exports = {
 				res.status(404).send('Wilder Not found')
 			} else {
 				try {
-					await dataSource
+					const updatedWilder = await dataSource
 						.getRepository(Wilder)
-						.update(id, { name: name })
-					res.status(200).send('Wilder Updated Successfully')
+						.save(req.body)
+					//.update(id, { name: name })
+					res.status(200).send(updatedWilder)
 				} catch (error) {
 					res.status(500).send(
 						`An error occured updating Wilder : ${error}`
