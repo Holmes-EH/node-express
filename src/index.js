@@ -12,6 +12,9 @@ app.get('/', (req, res) => {
 	res.send('Hello World!')
 })
 app.post('/api/wilders', wilderController.create)
+app.get('/api/wilders', wilderController.findAll)
+app.put('/api/wilders', wilderController.update)
+app.delete('/api/wilders', wilderController.delete)
 
 const start = async () => {
 	await dataSource.initialize()
