@@ -1,15 +1,15 @@
-POST http://localhost:3000/api/skills
+POST http://localhost:5000/api/skills
 Content-Type: application/json
 
 {
-    "name" : "Typescript"
+    "name" : "Python"
 }
 
 ###
-GET http://localhost:3000/api/skills
+GET http://localhost:5000/api/skills
 
 ###
-PUT http://localhost:3000/api/skills
+PUT http://localhost:5000/api/skills
 Content-Type: application/json
 
 {
@@ -18,7 +18,7 @@ Content-Type: application/json
     }
 
 ###
-DELETE http://localhost:3000/api/skills
+DELETE http://localhost:5000/api/skills
 Content-Type: application/json
 
 {
