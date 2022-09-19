@@ -13,4 +13,11 @@ module.exports = new EntitySchema({
 			unique: true,
 		},
 	},
+	relations: {
+		grades: {
+			target: 'Grades',
+			type: 'one-to-many',
+			inverseSide: 'Skill',
+		},
+	},
 })
