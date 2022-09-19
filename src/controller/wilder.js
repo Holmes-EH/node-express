@@ -1,12 +1,41 @@
 const dataSource = require('../utils').dataSource
 const Skill = require('../entity/Skill')
 const Wilder = require('../entity/Wilder')
+const Grades = require('../entity/Grades')
+
+//source of asyncForEach : https://gist.github.com/Atinux/fd2bcce63e44a7d3addddc166ce93fb2
+const asyncForEach = async (array, callback) => {
+	for (let index = 0; index < array.length; index++) {
+		await callback(array[index], index, array)
+	}
+}
 
 module.exports = {
 	create: async (req, res) => {
 		try {
-			await dataSource.getRepository(Wilder).save(req.body)
-			res.status(201).send('Wilder Created !')
+			const { name, city, description, grades } = req.body
+			const newWilder = {
+				name,
+				description,
+				city,
+			}
+			const wilder = await dataSource
+				.getRepository(Wilder)
+				.save(newWilder)
+			if (grades.length > 0) {
+				asyncForEach(grades, async (grade) => {
+					const skill = await dataSource
+						.getRepository(Skill)
+						.findOneBy({ id: grade.id })
+					await dataSource.getRepository(Grades).save({
+						wilder,
+						skill,
+						grade: grade.votes,
+					})
+					console.log('grade added')
+				})
+			}
+			res.status(201).send({ message: 'Wilder Created !', data: wilder })
 		} catch (error) {
 			console.error('Error ->', error)
 			res.status(500).send(`Error while creating Wilder : ${error}`)
@@ -14,7 +43,13 @@ module.exports = {
 	},
 	findAll: async (req, res) => {
 		try {
-			const wilders = await dataSource.getRepository(Wilder).find()
+			const wilders = await dataSource.getRepository(Wilder).find({
+				relations: {
+					grades: {
+						skill: true,
+					},
+				},
+			})
 			if (wilders.length > 0) {
 				res.status(200).send(wilders)
 			} else {
