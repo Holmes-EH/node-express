@@ -62,20 +62,40 @@ module.exports = {
 	},
 	update: async (req, res) => {
 		try {
-			const { id, name } = req.body
+			const { id, grades } = req.body
 			const wilderToUpdate = await dataSource
 				.getRepository(Wilder)
 				.findOneBy({ id: id })
 			if (wilderToUpdate === null) {
 				res.status(404).send('Wilder Not found')
 			} else {
+				wilderToUpdate.skills = []
 				try {
+					if (grades.length > 0) {
+						asyncForEach(grades, async (grade) => {
+							const skill = await dataSource
+								.getRepository(Skill)
+								.findOneBy({ id: grade.id })
+							wilderToUpdate.skills = [
+								...wilderToUpdate.skills,
+								skill,
+							]
+							console.log('grade added')
+						})
+					}
+					wilderToUpdate.name = req.body.name
+					wilderToUpdate.city = req.body.city
+					wilderToUpdate.description = req.body.description
 					const updatedWilder = await dataSource
 						.getRepository(Wilder)
-						.save(req.body)
-					//.update(id, { name: name })
-					res.status(200).send(updatedWilder)
+						.save(wilderToUpdate)
+
+					res.status(200).send({
+						message: 'Wilder Updated',
+						updatedWilder,
+					})
 				} catch (error) {
+					console.log(error)
 					res.status(500).send(
 						`An error occured updating Wilder : ${error}`
 					)
@@ -98,7 +118,7 @@ module.exports = {
 				const skillToAdd = await dataSource
 					.getRepository(Skill)
 					.findOneBy({ name: skillName })
-				console.log(skillToAdd)
+				// console.log(skillToAdd)
 				if (skillToAdd === null) {
 					res.status(404).send('Skill not found.')
 				} else {
