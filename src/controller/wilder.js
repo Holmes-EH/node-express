@@ -22,7 +22,7 @@ module.exports = {
 			const wilder = await dataSource
 				.getRepository(Wilder)
 				.save(newWilder)
-			if (grades.length > 0) {
+			if (grades && grades.length > 0) {
 				asyncForEach(grades, async (grade) => {
 					const skill = await dataSource
 						.getRepository(Skill)
@@ -32,7 +32,6 @@ module.exports = {
 						skill,
 						grade: grade.votes,
 					})
-					console.log('grade added')
 				})
 			}
 			res.status(201).send({ message: 'Wilder Created !', data: wilder })
@@ -62,7 +61,7 @@ module.exports = {
 	},
 	update: async (req, res) => {
 		try {
-			const { id, grades } = req.body
+			const { id, name, city, description, grades } = req.body
 			const wilderToUpdate = await dataSource
 				.getRepository(Wilder)
 				.findOneBy({ id: id })
@@ -71,21 +70,20 @@ module.exports = {
 			} else {
 				wilderToUpdate.skills = []
 				try {
-					if (grades.length > 0) {
+					if (grades && grades.length > 0) {
 						asyncForEach(grades, async (grade) => {
-							const skill = await dataSource
-								.getRepository(Skill)
+							const gradeToUpdate = await dataSource
+								.getRepository(Grades)
 								.findOneBy({ id: grade.id })
-							wilderToUpdate.skills = [
-								...wilderToUpdate.skills,
-								skill,
-							]
-							console.log('grade added')
+							gradeToUpdate.grade = grade.votes
+							await dataSource
+								.getRepository(Grades)
+								.save(gradeToUpdate)
 						})
 					}
-					wilderToUpdate.name = req.body.name
-					wilderToUpdate.city = req.body.city
-					wilderToUpdate.description = req.body.description
+					wilderToUpdate.name = name
+					wilderToUpdate.city = city
+					wilderToUpdate.description = description
 					const updatedWilder = await dataSource
 						.getRepository(Wilder)
 						.save(wilderToUpdate)

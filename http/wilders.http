@@ -2,7 +2,8 @@ POST http://localhost:5000/api/wilders
 Content-Type: application/json
 
 {
-    "name" : "Jane Doe"
+    "name" : "Jane Doe",
+    "city" : "CodesVille"
 }
 
 ###
@@ -13,8 +14,16 @@ PUT http://localhost:5000/api/wilders
 Content-Type: application/json
 
 {
-    "id" : 3,
-    "description" : "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;"
+    "id" : 1,
+    "city" : "Bayonne",
+    "description" : "updated description",
+    "grades" : [
+        {
+            "id" : "2",
+            "title" : "Python",
+            "votes" : 10
+        }
+    ]
 }
 
 ###
@@ -22,9 +31,9 @@ POST http://localhost:5000/api/wilders/addSkill
 Content-Type: application/json
 
 {
-    "wilderId" : 3,
-    "skillId" : 4,
-    "grade": 2
+    "wilderId" : 1,
+    "skillId" : 1,
+    "grade": 9
 }
 
 ###
